@@ -92,5 +92,47 @@ class FunCog:
                 await ctx.send(embed=embed)
                 asyncio.sleep(1)
 
+        @bot.command()
+        @commands.guild_only()
+        @commands.cooldown(1, 1, BucketType.user)
+        async def urban(ctx, *, str):
+            if ctx.message.author == bot.user:
+                return
+
+            else:
+                try:
+                    textchannel = ctx.message.channel
+                    await textchannel.trigger_typing()
+                    time.sleep(2)
+                    ud = UrbanDictionary()
+                    word = await ud.get_word(str)
+                    embed=discord.Embed(title="Word: {0.word}".format(word), color=0x9b59b6)
+                    embed.add_field(name="Urban Dictionary Definition", value="{0.definition}".format(word), inline=True)
+                    embed.add_field(name="Urban Link", value="{0.permalink}".format(word), inline=False)
+                    embed.set_thumbnail(url="https://imgur.com/HBPlcKQ.jpg")
+                    await ctx.send(embed=embed)
+                    await ud.close()
+
+                except asyncurban.errors.WordNotFoundError():
+                    embed=discord.Embed(title="There were no matches for that word!", color=0x9b59b6)
+                    await ctx.send(embed=embed)
+                    await ud.close()
+
+        @bot.command()
+        @commands.guild_only()
+        @commands.cooldown(1, 1, BucketType.user)
+        async def urbanr(ctx):
+            textchannel = ctx.message.channel
+            await textchannel.trigger_typing()
+            time.sleep(2)
+            ud = UrbanDictionary()
+            random_word = await ud.get_random()
+            embed = discord.Embed(title="Word: {0.word}".format(random_word), color=0x9b59b6)
+            embed.add_field(name="Urban Dictionary Definition", value="{0.definition}".format(random_word), inline=True)
+            embed.add_field(name="Urban Link", value="{0.permalink}".format(random_word), inline=True)
+            embed.set_thumbnail(url="https://imgur.com/HBPlcKQ.jpg")
+            await ctx.send(embed=embed)
+            await ud.close()
+
 def setup(bot):
     bot.add_cog(FunCog(bot))

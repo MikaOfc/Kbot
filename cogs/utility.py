@@ -110,7 +110,7 @@ class UtilityCog:
                 await textchannel.trigger_typing()
                 time.sleep(2)
                 target = ctx.message.author
-                channel = bot.get_channel(426268143728721941)
+                channel = bot.get_channel(431079321613107200)
                 embed1 = discord.Embed(title="We have a new suggestion! :e_mail:", description=msg, color=0x9b59b6)
                 embed1.add_field(name="User Name", value=target.name)
                 embed1.add_field(name="User ID", value=target.id)

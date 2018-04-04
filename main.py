@@ -37,15 +37,6 @@ async def on_ready():
 
 @bot.command()
 @commands.guild_only()
-@commands.cooldown(1, 0.5, BucketType.user)
-async def urandom(ctx, self):
-    ud = UrbanDictionary
-    random_word = await ud.get_random(self)
-    embed=discord.Embed(title="{0.word}: {0.definition}\n{0.permalink}".format(random_word), end='\n\n', color=0x9b59b6)
-    await ctx.send(embed=embed)
-
-@bot.command()
-@commands.guild_only()
 @commands.cooldown(1, 1, BucketType.guild)
 async def help(ctx):
     if ctx.message.author == bot.user:
@@ -142,7 +133,7 @@ async def fun(ctx):
         textchannel = ctx.message.channel
         await textchannel.trigger_typing()
         time.sleep(2)
-        embed = discord.Embed(title="Fun Commands :tophat:", description="**Coin Flip** - Flips a coin, which lands on either heads or tails. | **Usage:** =coinflip\n\n**Lenny Shrug** - Posts a ¯\_(ツ)_/¯ face in chat. | **Usage:** =lennyshrug\n\n**Say** - Makes the bot repeat what you say. | **Usage:** =say (message)\n\n**Ship** - Shows relationship stats for you & a target user. | **Usage:** =ship @user", color=0x9b59b6)
+        embed = discord.Embed(title="Fun Commands :tophat:", description="**Coin Flip** - Flips a coin, which lands on either heads or tails. | **Usage:** =coinflip\n\n**Lenny Shrug** - Posts a ¯\_(ツ)_/¯ face in chat. | **Usage:** =lennyshrug\n\n**Say** - Makes the bot repeat what you say. | **Usage:** =say (message)\n\n**Ship** - Shows relationship stats for you & a target user. | **Usage:** =ship @user\n\n**Urban** - Searches a word on Urban Dictionary. | **Usage:** =urban (word)\n\n**Urban Random** - Reponds with a random Urban Dictionary term. | **Usage:** =urbanr", color=0x9b59b6)
         await ctx.send(embed=embed)
 
 @bot.command()
@@ -168,4 +159,4 @@ async def embed(ctx):
     await ctx.send(embed=embed)
     #This line ^ defines the embed function, so replies from the bot that use embeds can function, don't touch this or it will disrupt all the embeds in all bot responses.
 
-bot.run('')
+bot.run('NDI5ODYyMjk1MTkyMjA3MzYx.DaZLhQ.yU1DkysI667m1COjnVDvOaVVqr0')
