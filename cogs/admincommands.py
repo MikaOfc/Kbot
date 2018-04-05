@@ -18,12 +18,6 @@ class AdminCommandsCog:
 
         @bot.command()
         @commands.guild_only()
-        async def testing(ctx):
-            embed=discord.Embed(title="Thank fucking God, this test obviously works!")
-            await ctx.send(embed=embed)
-
-        @bot.command()
-        @commands.guild_only()
         @commands.cooldown(1, 0.5, BucketType.guild)
         @commands.has_permissions(ban_members=True)
         @commands.bot_has_permissions(ban_members=True)
@@ -78,15 +72,37 @@ class AdminCommandsCog:
         @commands.has_permissions(ban_members=True)
         @commands.cooldown(1, 5, BucketType.user)
         async def hackban(ctx, user_id:int):
-            author = ctx.message.author
-            guild = author.guild
-            user = guild.get_member(user_id)
-            await bot.http.ban(user_id, guild.id, 0)
-            textchannel = ctx.message.channel
-            await textchannel.trigger_typing()
-            time.sleep(2)
-            embed=discord.Embed(title="{} has been succesfully banned!".format(user_id), color=0x9b59b6)
-            await ctx.send(embed=embed)
+            if ctx.message.author == bot.user:
+                return
+
+            elif ctx.message.author == ctx.guild.owner:
+                author = ctx.message.author
+                guild = author.guild
+                user = guild.get_member(user_id)
+                await bot.http.ban(user_id, guild.id, 0)
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                embed=discord.Embed(title="{} has been succesfully banned!".format(user_id), color=0x9b59b6)
+                await ctx.send(embed=embed)
+
+            elif user == ctx.message.author:
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                embed=discord.Embed(title="You cannot ban yourself!", color=0x9b59b6)
+                await ctx.send(embed=embed)
+
+            else:
+                author = ctx.message.author
+                guild = author.guild
+                user = guild.get_member(user_id)
+                await bot.http.ban(user_id, guild.id, 0)
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                embed=discord.Embed(title="{} has been succesfully banned!".format(user_id), color=0x9b59b6)
+                await ctx.send(embed=embed)
 
         @bot.command()
         @commands.guild_only()
@@ -224,8 +240,16 @@ class AdminCommandsCog:
         @commands.has_permissions(manage_channels=True)
         @commands.cooldown(1, 0.5, BucketType.user)
         async def delchannel(ctx):
-            textchannel = ctx.message.channel
-            await textchannel.delete()
+            if ctx.message.author == bot.user:
+                return
+
+            elif ctx.message.author == ctx.guild.owner:
+                textchannel = ctx.message.channel
+                await textchannel.delete()
+
+            else:
+                textchannel = ctx.message.channel
+                await textchannel.delete()
 
         @bot.command()
         @commands.guild_only()
@@ -234,6 +258,15 @@ class AdminCommandsCog:
         async def createchannel(ctx, *, str):
             if ctx.message.author == bot.user:
                 return
+
+            elif ctx.message.author == ctx.guild.owner:
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                guild = ctx.message.guild
+                await guild.create_text_channel(str)
+                embed=discord.Embed(title="Channel successfully created!", color=0x9b59b6)
+                await ctx.send(embed=embed)
 
             else:
                 textchannel = ctx.message.channel
@@ -252,6 +285,14 @@ class AdminCommandsCog:
         async def createrole(ctx, *, name):
             if ctx.message.author == bot.user:
                 return
+
+            elif ctx.message.author == ctx.guild.owner:
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                await ctx.guild.create_role(name=name)
+                embed=discord.Embed(title="Role successfully created!", color=0x9b59b6)
+                await ctx.send(embed=embed)
 
             else:
                 textchannel = ctx.message.channel
@@ -524,13 +565,23 @@ class AdminCommandsCog:
             if ctx.message.author == bot.user:
                 return
 
-            if number > 1000:
+            elif number > 1000:
                 textchannel = ctx.message.channel
                 await textchannel.trigger_typing()
                 time.sleep(2)
                 embed=discord.Embed(description="I cannot delete more than 1,000 messages at a time, or messages older than 2 weeks old. Thats how Discord works, don't blame me please.~ ♡", color=0x9b59b6)
                 await ctx.send(embed=embed)
                 return
+
+            elif ctx.message.author == ctx.guild.owner and number < 1000:
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                deleted = number
+                textchannel = ctx.message.channel
+                await textchannel.purge(limit=deleted+1)
+                embed = discord.Embed(title="Cleared {} message(s).".format(deleted), color=0x9b59b6)
+                await ctx.send(embed=embed)
 
             else:
                 textchannel = ctx.message.channel

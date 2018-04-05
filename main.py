@@ -133,7 +133,7 @@ async def fun(ctx):
         textchannel = ctx.message.channel
         await textchannel.trigger_typing()
         time.sleep(2)
-        embed = discord.Embed(title="Fun Commands :tophat:", description="**Coin Flip** - Flips a coin, which lands on either heads or tails. | **Usage:** =coinflip\n\n**Lenny Shrug** - Posts a ¯\_(ツ)_/¯ face in chat. | **Usage:** =lennyshrug\n\n**Say** - Makes the bot repeat what you say. | **Usage:** =say (message)\n\n**Ship** - Shows relationship stats for you & a target user. | **Usage:** =ship @user\n\n**Urban** - Searches a word on Urban Dictionary. | **Usage:** =urban (word)\n\n**Urban Random** - Reponds with a random Urban Dictionary term. | **Usage:** =urbanr", color=0x9b59b6)
+        embed = discord.Embed(title="Fun Commands :tophat:", description="**Coin Flip** - Flips a coin, which lands on either heads or tails. | **Usage:** =coinflip\n\n**Lenny Shrug** - Posts a ¯\_(ツ)_/¯ face in chat. | **Usage:** =lennyshrug\n\n**Say** - Makes the bot repeat what you say. | **Usage:** =say (message)\n\n**Ship** - Shows relationship stats for you & a target user. | **Usage:** =ship @user\n\n**Urban** - Searches a word on Urban Dictionary. | **Usage:** =urban (word)\n\n**Urban Random** - Reponds with a random Urban Dictionary term. | **Usage:** =urbanr\n\n**Weather** - Checks the weather in a given location. | **Usage:** =weather (city)", color=0x9b59b6)
         await ctx.send(embed=embed)
 
 @bot.command()

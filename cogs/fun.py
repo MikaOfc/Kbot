@@ -9,12 +9,35 @@ import json
 import os
 import time
 import sys, traceback
+from apixu.client import ApixuClient, ApixuException
 from asyncurban import UrbanDictionary
 from discord.ext.commands.cooldowns import BucketType
+
+api_key = '6103b63add044f4385031538180504'
+client = ApixuClient(api_key)
 
 class FunCog:
     def __init__(self, bot):
         self.bot = bot
+
+        @bot.command()
+        @commands.guild_only()
+        @commands.cooldown(1, 1, BucketType.user)
+        async def weather(ctx, *, str):
+            current = client.getCurrentWeather(q=str)
+            embed=discord.Embed(title="Current weather for :white_sun_small_cloud:", color=0x9b59b6)
+            embed.add_field(name="Country", value="{}".format(current['location']['country']), inline=True)
+            embed.add_field(name="State/Region", value="{}".format(current['location']['region']), inline=True)
+            embed.add_field(name="City", value="{}".format(current['location']['name']), inline=True)
+            embed.add_field(name="Lat/Long", value="{}/{}".format(current['location']['lat'], current['location']['lon']))
+            embed.add_field(name="Local Time", value="{}".format(current['location']['localtime']))
+            embed.add_field(name="Temperature", value="{}°C/{}°F".format(current['current']['temp_c'], current['current']['temp_f']))
+            embed.add_field(name="Wind Speed", value="{}kph/{}mph".format(current['current']['wind_kph'], current['current']['wind_mph']))
+            embed.add_field(name="Current Rainfall", value="{}mm/{}in".format(current['current']['precip_mm'], current['current']['precip_in']))
+            embed.add_field(name="Humidity", value="{} RH".format(current['current']['humidity']))
+            embed.add_field(name="Last Updated", value="{}".format(current['current']['last_updated']))
+            embed.set_thumbnail(url="https://imgur.com/oheopRH.jpg")
+            await ctx.send(embed=embed)
 
         @bot.command()
         @commands.guild_only()
@@ -122,17 +145,21 @@ class FunCog:
         @commands.guild_only()
         @commands.cooldown(1, 1, BucketType.user)
         async def urbanr(ctx):
-            textchannel = ctx.message.channel
-            await textchannel.trigger_typing()
-            time.sleep(2)
-            ud = UrbanDictionary()
-            random_word = await ud.get_random()
-            embed = discord.Embed(title="Word: {0.word}".format(random_word), color=0x9b59b6)
-            embed.add_field(name="Urban Dictionary Definition", value="{0.definition}".format(random_word), inline=True)
-            embed.add_field(name="Urban Link", value="{0.permalink}".format(random_word), inline=True)
-            embed.set_thumbnail(url="https://imgur.com/HBPlcKQ.jpg")
-            await ctx.send(embed=embed)
-            await ud.close()
+            if ctx.message.author == bot.user:
+                return
+
+            else:
+                textchannel = ctx.message.channel
+                await textchannel.trigger_typing()
+                time.sleep(2)
+                ud = UrbanDictionary()
+                random_word = await ud.get_random()
+                embed = discord.Embed(title="Word: {0.word}".format(random_word), color=0x9b59b6)
+                embed.add_field(name="Urban Dictionary Definition", value="{0.definition}".format(random_word), inline=True)
+                embed.add_field(name="Urban Link", value="{0.permalink}".format(random_word), inline=True)
+                embed.set_thumbnail(url="https://imgur.com/HBPlcKQ.jpg")
+                await ctx.send(embed=embed)
+                await ud.close()
 
 def setup(bot):
     bot.add_cog(FunCog(bot))
